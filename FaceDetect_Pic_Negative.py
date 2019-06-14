@@ -28,7 +28,7 @@ def detect(img_name):
 
   print(faces,"faces Detected.")
   if faces == 1:
-    text = str(faces) + "face detected"
+    text = str(faces) + " face detected"
   else:
     text = str(faces) + " faces detected"
   # 圖片/起點座標/對向座標/顏色/粗細
