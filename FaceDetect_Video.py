@@ -11,10 +11,10 @@ def detect(source,dest):
   width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
   height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-  # 使用 XVID 編碼
-  fourcc = cv2.VideoWriter_fourcc(*'XVID')
+  # 使用 MP4 編碼
+  fourcc = cv2.VideoWriter_fourcc('m','p','4','v')
 
-  # 建立 VideoWriter 物件，輸出影片至 output.avi，FPS 值為 20.0
+  # 建立 VideoWriter 物件， FPS 值為 20.0
   out = cv2.VideoWriter(dest, fourcc, 20.0, (width, height))
 
   # Dlib 的人臉偵測器
@@ -39,8 +39,7 @@ def detect(source,dest):
       cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 4, cv2.LINE_AA)
 
       # 標示分數
-      cv2.putText(frame, text, (x1, y1), cv2.FONT_HERSHEY_DUPLEX,
-              0.7, (255, 255, 255), 1, cv2.LINE_AA)
+      cv2.putText(frame, text, (x1, y1), cv2.FONT_HERSHEY_DUPLEX,0.7, (255, 255, 255), 1, cv2.LINE_AA)
 
     # 寫入影格
     out.write(frame)

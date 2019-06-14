@@ -15,7 +15,7 @@ def detect(img_name):
 
   # 偵測人臉
   face_rects = detector(img, 0)
-
+  faces = 0;
   # 取出所有偵測的結果
   for i, d in enumerate(face_rects):
     x1 = d.left()
@@ -24,7 +24,17 @@ def detect(img_name):
     y2 = d.bottom()
 
     # 以方框標示偵測的人臉
-    cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4, cv2.LINE_AA)
+    cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 255), 4, cv2.LINE_AA)
+    faces += 1;
+  print(faces,"faces Detected.")
+  if faces == 1:
+    text = str(faces) + "face detected"
+  else:
+    text = str(faces) + " faces detected"
+  # 圖片/起點座標/對向座標/顏色/粗細
+  cv2.rectangle(img,(80,40),(700,120),(255,255,255),-1)
+  # 照片/添加的文字/左上角坐標/字體/字體大小/顏色/字體粗細
+  cv2.putText(img,text,(100,100),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,0),5)
 
   # 顯示結果
   cv2.imshow("Face Detection", img)
