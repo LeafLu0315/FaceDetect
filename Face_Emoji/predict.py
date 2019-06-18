@@ -24,8 +24,14 @@ for emoji in emotion_labels:
 
 # Main Function
 def main():
-    imageName = sys.argv[1]
-    imageCap(imageName)
+    argc = len(sys.argv) - 1
+    if argc == 1:
+        imageName = sys.argv[1]
+        imageCap(imageName)
+    elif argc == 0:
+        videoCap()
+    else:
+        print("Too many arguments!")
 
 def face2emoji(face, emotion_index, position):
     x, y, w, h = position
@@ -36,7 +42,6 @@ def face2emoji(face, emotion_index, position):
     face_part = (face[y:y + h, x:x + w]/255.0) * background
     overlay_part = overlay_img * overlay_bg
     face[y:y + h, x:x + w] = cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0)
-
     return face
 
 def videoCap():
@@ -132,6 +137,8 @@ def imageCap(img_name):
 
             emoji = face2emoji(emoji_show, emotion, (x, y, w, h))
             cv2.imshow("Emotion", emoji)
+            emoji_imageName = "emoji_" + img_name
+            cv2.imwrite(emoji_imageName,emoji)
 
             # 框出臉部並且寫上標籤
             # 圖片/起點座標/對向座標/顏色/粗細
@@ -142,11 +149,12 @@ def imageCap(img_name):
             # 照片/添加的文字/左上角坐標/字體/字體大小/顏色/字體粗細
             cv2.putText(img, '%s' % emotion, (x, y - 50),
                         cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 1, 15)
-            cv2.imshow('Face', img)
-            if cv2.waitKey(1500) == ord('q'):
+            cv2.imshow('Origin Image', img)
+            if cv2.waitKey(1700) == ord('q'):
                 break
         print("total count:")
     for i in range(num_class):
         print(emotion_labels[i],":",emotion_count[i])
+
 if __name__ == "__main__":
     main()
