@@ -24,7 +24,8 @@
   >python predict.py <圖片>
 
 ## 參考資料:
-    原作者:![zhouzaihang](https://github.com/zhouzaihang/FaceEmotionClassifier)
+    原作者:
+    https://github.com/zhouzaihang/FaceEmotionClassifier
 
 ## 利用資料介紹
 
