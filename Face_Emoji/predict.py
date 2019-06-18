@@ -114,12 +114,10 @@ def imageCap(img_name):
     emotion_count = [0] * num_class
     faceLands = cascade.detectMultiScale(gray, scaleFactor=1.1,minNeighbors=1)
     if len(faceLands) > 0:
-        print("OK")
         for faceLand in faceLands:
             x, y, w, h = faceLand
             images = []
             result = np.array([0.0] * num_class)
-            print("IN")
             # 裁剪出臉部圖像
             image = cv2.resize(gray[y:y + h, x:x + w], (img_size, img_size))
             image = image / 255.0
