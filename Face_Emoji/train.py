@@ -46,18 +46,18 @@ class Model:
     def train_model(self):
         sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
         self.model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-        # 自动扩充训练样本
+        # 自動擴充訓練樣本
         train_datagen = ImageDataGenerator(
             rescale=1. / 255,
             shear_range=0.2,
             zoom_range=0.2,
             horizontal_flip=True)
-        # 归一化验证集
+        # 歸依化驗證集
         val_datagen = ImageDataGenerator(
             rescale=1. / 255)
         eval_datagen = ImageDataGenerator(
             rescale=1. / 255)
-        # 以文件分类名划分label
+        # 以分類名劃分label
         train_generator = train_datagen.flow_from_directory(
             data_path + '/train',
             target_size=(img_size, img_size),

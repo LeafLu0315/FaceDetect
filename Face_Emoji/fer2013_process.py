@@ -40,7 +40,7 @@ for save_path, csv_file in [(train_set, train_csv), (val_set, val_csv), (test_se
         csv_r = csv.reader(f)
         header = next(csv_r)
         for i, (label, pixel) in enumerate(csv_r):
-            # 0 - 6 文件夹分别label为：
+            # 0 - 6 資料夾分别label為：
             # angry ，disgust ，fear ，happy ，sad ，surprise ，neutral
             pixel = np.asarray([float(p) for p in pixel.split()]).reshape(48, 48)
             sub_folder = os.path.join(save_path, label)
