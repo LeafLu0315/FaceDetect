@@ -62,17 +62,17 @@
 分為7個資料夾(0-6)分別作訓練，依序為:
 
     - 生氣(angry)
-    
+
     - 厭惡(disgust)
-    
+
     - 恐懼(fear)
-    
+
     - 開心(happy)
-    
+
     - 難過(sad)
-    
+
     - 驚訝(surprise)
-    
+
     - 平凡無表情(neutral)
 
 ![labels](image/labels.png "Labels")
@@ -429,3 +429,5 @@ def face2emoji(face, emotion_index, position):
 ### 最後結果
 
 ![total](image/total.png "Total")
+
+![result](image/emoji_1.jpg "Result")
