@@ -32,7 +32,7 @@
 所以首先打開csv檔，根據usage把資料集分為：訓練集、測試集和驗證集
 
 ``` python
-with open(csv_file) as f:
+    with open(csv_file) as f:
     csv_r = csv.reader(f)
     header = next(csv_r) #Python中讀取檔，指向的是檔的第一行，但是第一行是標題，所以用next()指向下一行，也就是從第二行開始
     print(header)
@@ -56,7 +56,7 @@ with open(csv_file) as f:
 ![avatar](image/lable0-6.png)
 
 ``` python
-num = 1
+    num = 1
     with open(csv_file) as f:
         csv_r = csv.reader(f)
         header = next(csv_r)
@@ -158,47 +158,47 @@ self.model.add(Activation('softmax'))
 
 ``` python
 _________________________________________________________________
-Layer (type)                 Output Shape              Param #   
+Layer (type)                 Output Shape              Param #
 =================================================================
-conv2d_1 (Conv2D)            (None, 48, 48, 32)        64        
+conv2d_1 (Conv2D)            (None, 48, 48, 32)        64
 _________________________________________________________________
-activation_1 (Activation)    (None, 48, 48, 32)        0         
+activation_1 (Activation)    (None, 48, 48, 32)        0
 _________________________________________________________________
-conv2d_2 (Conv2D)            (None, 48, 48, 32)        25632     
+conv2d_2 (Conv2D)            (None, 48, 48, 32)        25632
 _________________________________________________________________
-activation_2 (Activation)    (None, 48, 48, 32)        0         
+activation_2 (Activation)    (None, 48, 48, 32)        0
 _________________________________________________________________
-max_pooling2d_1 (MaxPooling2 (None, 24, 24, 32)        0         
+max_pooling2d_1 (MaxPooling2 (None, 24, 24, 32)        0
 _________________________________________________________________
-conv2d_3 (Conv2D)            (None, 24, 24, 32)        9248      
+conv2d_3 (Conv2D)            (None, 24, 24, 32)        9248
 _________________________________________________________________
-activation_3 (Activation)    (None, 24, 24, 32)        0         
+activation_3 (Activation)    (None, 24, 24, 32)        0
 _________________________________________________________________
-max_pooling2d_2 (MaxPooling2 (None, 12, 12, 32)        0         
+max_pooling2d_2 (MaxPooling2 (None, 12, 12, 32)        0
 _________________________________________________________________
-conv2d_4 (Conv2D)            (None, 12, 12, 64)        51264     
+conv2d_4 (Conv2D)            (None, 12, 12, 64)        51264
 _________________________________________________________________
-activation_4 (Activation)    (None, 12, 12, 64)        0         
+activation_4 (Activation)    (None, 12, 12, 64)        0
 _________________________________________________________________
-max_pooling2d_3 (MaxPooling2 (None, 6, 6, 64)          0         
+max_pooling2d_3 (MaxPooling2 (None, 6, 6, 64)          0
 _________________________________________________________________
-flatten_1 (Flatten)          (None, 2304)              0         
+flatten_1 (Flatten)          (None, 2304)              0
 _________________________________________________________________
-dense_1 (Dense)              (None, 2048)              4720640   
+dense_1 (Dense)              (None, 2048)              4720640
 _________________________________________________________________
-activation_5 (Activation)    (None, 2048)              0         
+activation_5 (Activation)    (None, 2048)              0
 _________________________________________________________________
-dropout_1 (Dropout)          (None, 2048)              0         
+dropout_1 (Dropout)          (None, 2048)              0
 _________________________________________________________________
-dense_2 (Dense)              (None, 1024)              2098176   
+dense_2 (Dense)              (None, 1024)              2098176
 _________________________________________________________________
-activation_6 (Activation)    (None, 1024)              0         
+activation_6 (Activation)    (None, 1024)              0
 _________________________________________________________________
-dropout_2 (Dropout)          (None, 1024)              0         
+dropout_2 (Dropout)          (None, 1024)              0
 _________________________________________________________________
-dense_3 (Dense)              (None, 7)                 7175      
+dense_3 (Dense)              (None, 7)                 7175
 _________________________________________________________________
-activation_7 (Activation)    (None, 7)                 0         
+activation_7 (Activation)    (None, 7)                 0
 =================================================================
 Total params: 6,912,199
 Trainable params: 6,912,199
