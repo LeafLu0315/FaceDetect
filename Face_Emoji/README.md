@@ -25,7 +25,7 @@
 
 ## 參考資料:
     原作者:
-    https://github.com/zhouzaihang/FaceEmotionClassifier
+    [Github](https://github.com/zhouzaihang/FaceEmotionClassifier)
 
 ## 利用資料介紹
 
