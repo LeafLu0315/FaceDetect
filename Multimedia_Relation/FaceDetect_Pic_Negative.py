@@ -38,6 +38,8 @@ def detect(img_name):
   cv2.putText(img,text,(100,100),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,0),5)
 
   cv2.imshow("Face Detection", img)
+  negative_imageName = "Negative_" + img_name
+  cv2.imwrite(negative_imageName,img)
   cv2.waitKey(0)
   cv2.destroyAllWindows()
 
