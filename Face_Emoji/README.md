@@ -24,8 +24,8 @@
   >python predict.py <圖片>
 
 ## 參考資料:
-    原作者:
-    [Github](https://github.com/zhouzaihang/FaceEmotionClassifier)
+   原作者:
+   [zhouzaihang](https://github.com/zhouzaihang/FaceEmotionClassifier)
 
 ## 利用資料介紹
 
@@ -60,15 +60,22 @@
 ```
 
 分為7個資料夾(0-6)分別作訓練，依序為:
+
     - 生氣(angry)
+    
     - 厭惡(disgust)
+    
     - 恐懼(fear)
+    
     - 開心(happy)
+    
     - 難過(sad)
+    
     - 驚訝(surprise)
+    
     - 平凡無表情(neutral)
 
-![avatar](image/labels.png "Labels")
+![labels](image/labels.png "Labels")
 
 ``` python
     num = 1
@@ -89,13 +96,18 @@
 ```
 
 並把圖片做成灰階(Gray):
-![avatar](image/gray_pic.png "GrayPictures")
+![GrayPictures](image/gray_pic.png "GrayPictures")
 
 ### Emoji表情集
 
 替代人臉的卡通表情採用了iOS的Emoji
 
-![avatar](image/happy.png "Happy")![avatar](image/angry.png "Angry")![avatar](image/fear.png "Fear")![avatar](image/neutral.png "Neutral")![avatar](image/sad.png "Sad")![avatar](image/surprise.png "Surprise")
+![happy](image/happy.png "Happy")
+![angry](image/angry.png "Angry")
+![fear](image/fear.png "Fear")
+![neutral](image/neutral.png "Neutral")
+![sad](image/sad.png "Sad")
+![surprise](image/surprise.png "Surprise")
 
 ## 神經網路模型
 
@@ -416,4 +428,4 @@ def face2emoji(face, emotion_index, position):
 ```
 ### 最後結果
 
-![avatar](image/total.png "Total")
+![total](image/total.png "Total")
