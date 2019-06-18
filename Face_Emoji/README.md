@@ -1,40 +1,40 @@
-# 人脸情绪识别与emoji转换(FaceEmotionClassifier)
+# 人臉情緒識別與emoji轉換(FaceEmotionClassifier)
 
-用Keras做前端，tensorflow做后端训练模型识别人类的情绪。根据情绪选择相应的emoji匹配 
+用Keras做前端，tensorflow做後端訓練模型識別人類的情緒。根據情緒選擇相應的emoji匹配
 
 [博客地址](https://www.zhzh.xyz/2018/12/13/emotionclassify/)
 
-## 项目简介
+## 項目簡介
 
 ![avatar](image/happyface.png)
 
-- 通过opencv-python识别出人脸
+- 通過opencv-python識別出人臉
 
-- 然后用fer2013的数据集训练深度卷积神经网络构建的模型识别人脸表情
+- 然後用fer2013的資料集訓練深度卷積神經網路構建的模型識別人臉表情
 
-- 使用训练好的模型识别人脸的表情情绪
+- 使用訓練好的模型識別人臉的表情情緒
 
-- 根据识别结果，匹配合适的emoji遮住人脸
+- 根據識別結果，匹配合適的emoji遮住人臉
 
-## 数据集介绍
+## 資料集介紹
 
 ### FER2013
 
-训练模型的数据集选用了[kaggle](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)挑战赛上的fer2013数据集
+訓練模型的資料集選用了[kaggle](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)挑戰賽上的fer2013資料集
 
-下载得到的csv格式可以通过Excel看到格式为：
+下載得到的csv格式可以通過Excel看到格式為：
 
 | Emotion | Pixels | Usage |
 |------------|------------|------------|
 | 0 | 4 0 170 118 101 88 88 75 78 82 66 74 68 59 63 64 65 90 89 73 80 80 85 88 95 117 … 129 | Training |
 | 2 | 200 197 149 139 156 89 111 58 62 95 113 117 116 116 112 111 96 86 99 113 120 1 … 116 | Training |
 
-所以首先打开csv文件，根据usage把数据集分为：训练集、测试集和验证集
+所以首先打開csv檔，根據usage把資料集分為：訓練集、測試集和驗證集
 
 ``` python
 with open(csv_file) as f:
     csv_r = csv.reader(f)
-    header = next(csv_r) #Python中读取文件，指向的是文件的第一行，但是第一行是标题，所以用next()指向下一行，也就是从第二行开始
+    header = next(csv_r) #Python中讀取檔，指向的是檔的第一行，但是第一行是標題，所以用next()指向下一行，也就是從第二行開始
     print(header)
     rows = [row for row in csv_r]
 
@@ -51,7 +51,7 @@ with open(csv_file) as f:
     print(len(tst))
 ```
 
-如果直接用当前数据是一个扁平的向量，没有空间局部性。用这样的数据直接进行训练，就会失去空间结构和图像关系信息。卷积神经网络可以保留空间信息，并且更适合图像分类问题，所以要把数据转为图片方便下面采用卷积神经网络进行训练
+如果直接用當前資料是一個扁平的向量，沒有空間局部性。用這樣的資料直接進行訓練，就會失去空間結構和圖像關係資訊。卷積神經網路可以保留空間資訊，並且更適合圖像分類問題，所以要把資料轉為圖片方便下面採用卷積神經網路進行訓練
 
 ![avatar](image/lable0-6.png)
 
@@ -61,7 +61,7 @@ num = 1
         csv_r = csv.reader(f)
         header = next(csv_r)
         for i, (label, pixel) in enumerate(csv_r):
-            # 0 - 6 文件夹内的图片label分别为：
+            # 0 - 6 資料夾內的圖片label分別為：
             # angry ，disgust ，fear ，happy ，sad ，surprise ，neutral
             pixel = np.asarray([float(p) for p in pixel.split()]).reshape(48, 48)
             sub_folder = os.path.join(save_path, label)
@@ -73,41 +73,41 @@ num = 1
             im.save(image_name)
 ```
 
-顺便把图片灰度化处理（防止黑人和白人的肤色对模型造成影响 O(∩_∩)O哈哈哈）
+順便把圖片灰度化處理（防止黑人和白人的膚色對模型造成影響 O(∩_∩)O哈哈哈）
 
 ![avatar](image/lable0.png)
 
 ### Emoji表情集
 
-替代人脸的卡通表情采用了Android 9的Emoji
+替代人臉的卡通表情採用了Android 9的Emoji
 
 ![avatar](image/happy.png "Happy")![avatar](image/angry.png "Angry")![avatar](image/fear.png "Fear")![avatar](image/neutral.png "Neutral")![avatar](image/sad.png "Sad")![avatar](image/surprise.png "Surprise")
 
-## 深度卷积神经网络模型
+## 深度卷積神經網路模型
 
-### 构建模型
+### 構建模型
 
-这里用到了很多神经网络层
+這裡用到了很多神經網路層
 
-> 这里图像使用tf（tensorflow）顺序，它在三个通道上的形状为（48,48），正常图片可以表示为(48, 48, 3)。只不过在刚刚生成图片的时候，已经做过灰度化处理，所以这个时候，只有一个通道了。
+> 這裡圖像使用tf（tensorflow）順序，它在三個通道上的形狀為（48,48），正常圖片可以表示為(48, 48, 3)。只不過在剛剛生成圖片的時候，已經做過灰度化處理，所以這個時候，只有一個通道了。
 
-#### 卷积阶段
+#### 卷積階段
 
-使用keras添加一层二维滤波器，输出维度是32并且每个二维滤波器是1 * 1的卷积层
+使用keras添加一層二維濾波器，輸出維度是32並且每個二維濾波器是1 * 1的卷積層
 
 ``` python
 self.model.add(Conv2D(32, (1, 1), strides=1, padding='same', input_shape=(img_size, img_size, 1)))
 ```
 
-padding='same'表示保留边界处的卷积计算结果。总共只有两种设置，这种表示输出和输入的大小相同，输入的区域边界填充为0；padding='valid'表示只对输入和滤波器完全叠加的部分做卷积运算，因而输出将会少于输入。不过讲道理，这里strides这个处理步幅已经是1了，不管设置什么都不会超过边界
+padding='same'表示保留邊界處的卷積計算結果。總共只有兩種設置，這種表示輸出和輸入的大小相同，輸入的區域邊界填充為0；padding='valid'表示只對輸入和濾波器完全疊加的部分做卷積運算，因而輸出將會少於輸入。不過講道理，這裡strides這個處理步幅已經是1了，不管設置什麼都不會超過邊界
 
-使用ReLU激活函数
+使用ReLU啟動函數
 
 ``` python
 self.model.add(Activation('relu'))
 ```
 
-然后给网络学习32个5 * 5的滤波器，也用ReLU激活。并且紧接着一个最大池化层方法
+然後給網路學習32個5 * 5的濾波器，也用ReLU啟動。並且緊接著一個最大池化層方法
 
 ``` python
 self.model.add(Conv2D(32, (5, 5), padding='same'))
@@ -115,7 +115,7 @@ self.model.add(Activation('relu'))
 self.model.add(MaxPooling2D(pool_size=(2, 2)))
 ```
 
-之后第二层卷积阶段和第三层卷积阶段都是用ReLU激活函数，后面再次跟着最大池化层方法。第二层仍然是32个3 * 3大小的滤波器，第三层滤波器增加到64个5 * 5，在更深的网络层增加滤波器数目是深度学习中一个普遍采用的技术
+之後第二層卷積階段和第三層卷積階段都是用ReLU啟動函數，後面再次跟著最大池化層方法。第二層仍然是32個3 * 3大小的濾波器，第三層濾波器增加到64個5 * 5，在更深的網路層增加濾波器數目是深度學習中一個普遍採用的技術
 
 ``` python
 self.model.add(Conv2D(32, (3, 3), padding='same'))
@@ -127,15 +127,15 @@ self.model.add(Activation('relu'))
 self.model.add(MaxPooling2D(pool_size=(2, 2)))
 ```
 
-#### 深度管道的下一个阶段
+#### 深度管道的下一個階段
 
-首先用Flatten()获得一个扁平的网络
+首先用Flatten()獲得一個扁平的網路
 
 ``` python
 self.model.add(Flatten())
 ```
 
-用ReLU激活一个有2048个神经元的隐藏层，用Dropout丢弃到一半的网络，再添加一个1024个神经元的隐藏层，跟着一个关闭50%神经元的dropout层
+用ReLU啟動一個有2048個神經元的隱藏層，用Dropout丟棄到一半的網路，再添加一個1024個神經元的隱藏層，跟著一個關閉50%神經元的dropout層
 
 ``` python
 self.model.add(Activation('relu'))
@@ -145,9 +145,9 @@ self.model.add(Activation('relu'))
 self.model.add(Dropout(0.5))
 ```
 
-#### 输出层
+#### 輸出層
 
-添加作为输出7个类的softmax层，每个类对应一个类别
+添加作為輸出7個類的softmax層，每個類對應一個類別
 
 ``` python
 self.model.add(Dense(num_classes))
@@ -208,39 +208,39 @@ model built
 Found 28709 images belonging to 7 classes.
 ```
 
-### 训练模型
+### 訓練模型
 
-#### 编译模型
+#### 編譯模型
 
-这里选择随机梯度下降算法作为优化器
+這裡選擇隨機梯度下降演算法作為優化器
 
 ``` python
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 self.model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 ```
 
-#### 通过数据增加改善性能
+#### 通過資料增加改善性能
 
-通常提高性能有两种方法，一种是定义一个更深、有更多卷积操作的网络，另一种训练更多的图片。这里用keras自带的ImageDataGenerator方法扩展数据集
+通常提高性能有兩種方法，一種是定義一個更深、有更多卷積操作的網路，另一種訓練更多的圖片。這裡用keras自帶的ImageDataGenerator方法擴展資料集
 
 ``` python
-# 自动扩充训练样本
+# 自動擴充訓練樣本
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255, # 归一化处理
-    shear_range=0.2, # 随机缩放
+    rescale=1. / 255, # 歸一化處理
+    shear_range=0.2, # 隨機縮放
     zoom_range=0.2, # 放大
-    horizontal_flip=True) # 随机水平翻转
+    horizontal_flip=True) # 隨機水準翻轉
 ```
 
-考虑到效率问题，keras提供了生成器针对模型的并发运行。我的理解就是CPU处理生成图像，GPU上并行进行训练
+考慮到效率問題，keras提供了生成器針對模型的併發運行。我的理解就是CPU處理生成圖像，GPU上並行進行訓練
 
 ``` python
-# 归一化验证集
+# 歸一化驗證集
 val_datagen = ImageDataGenerator(
     rescale=1. / 255)
 eval_datagen = ImageDataGenerator(
     rescale=1. / 255)
-# 以文件分类名划分label
+# 以檔分類名劃分label
 train_generator = train_datagen.flow_from_directory(
     data_path + '/train',
     target_size=(img_size, img_size),
@@ -268,9 +268,9 @@ history_fit = self.model.fit_generator(
 )
 ```
 
-#### 保存模型结构及权重
+#### 保存模型結構及權重
 
-把结构保存为JSON字串，把权重保存到HDF5文件
+把結構保存為JSON字串，把權重保存到HDF5檔
 
 ``` python
 model_json = self.model.to_json()
@@ -280,46 +280,46 @@ self.model.save_weights(model_path + '/model_weight.h5')
 self.model.save(model_path + '/model.h5')
 ```
 
-## 识别模块
+## 識別模組
 
-### 加载权重及模型结构
+### 載入權重及模型結構
 
 ``` python
-# 从json中加载模型
+# 從json中載入模型
 json_file = open(model_path + 'model_json.json')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
 
-# 加载模型权重
+# 載入模型權重
 model.load_weights(model_path + 'model_weight.h5')
 ```
 
-### 使用OPENCV-PYTHON识别人脸
+### 使用OPENCV-PYTHON識別人臉
 
-用opencv打开摄像头，使用opencv提供的一个训练好的模型识别人脸人类器
+用opencv打開攝像頭，使用opencv提供的一個訓練好的模型識別人臉人類器
 
 ``` python
-# 创建VideoCapture对象
+# 創建VideoCapture對象
 capture = cv2.VideoCapture(0)
 
-# 使用opencv的人脸分类器
+# 使用opencv的人臉分類器
 cascade = cv2.CascadeClassifier(model_path + 'haarcascade_frontalface_alt.xml')
 
-# 实时获得摄像头数据
+# 即時獲得攝像頭資料
 ret, frame = capture.read()
 
-# 灰度化处理
+# 灰度化處理
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-# 识别人脸位置
+# 識別人臉位置
 faceLands = cascade.detectMultiScale(gray, scaleFactor=1.1,
                                         minNeighbors=1, minSize=(120, 120))
 ```
 
-### 识别人脸情绪
+### 識別人臉情緒
 
-根据识别出的脸部特征点，裁剪出脸部图像，然后调用模型预测情绪
+根據識別出的臉部特徵點，裁剪出臉部圖像，然後調用模型預測情緒
 
 ``` python
 if len(faceLands) > 0:
@@ -328,12 +328,12 @@ if len(faceLands) > 0:
         images = []
         result = np.array([0.0] * num_class)
 
-        # 裁剪出脸部图像
+        # 裁剪出臉部圖像
         image = cv2.resize(gray[y:y + h, x:x + w], (img_size, img_size))
         image = image / 255.0
         image = image.reshape(1, img_size, img_size, 1)
 
-        # 调用模型预测情绪
+        # 調用模型預測情緒
         predict_lists = model.predict_proba(image, batch_size=32, verbose=1)
         result += np.array([predict for predict_list in predict_lists
                             for predict in predict_list])
@@ -341,10 +341,10 @@ if len(faceLands) > 0:
         print("Emotion:", emotion)
 ```
 
-根据识别结果，用cv的rectangle在视频流上框出脸部并且用putText打上标签
+根據識別結果，用cv的rectangle在視頻流上框出臉部並且用putText打上標籤
 
 ``` python
-# 框出脸部并且写上标签
+# 框出臉部並且寫上標籤
 cv2.rectangle(frame, (x - 20, y - 20), (x + w + 20, y + h + 20),
                 (0, 255, 255), thickness=10)
 cv2.putText(frame, '%s' % emotion, (x, y - 50),
@@ -352,16 +352,16 @@ cv2.putText(frame, '%s' % emotion, (x, y - 50),
 cv2.imshow('Face', frame)
 ```
 
-### 用EMOJI盖住人脸
+### 用EMOJI蓋住人臉
 
-先在第一次获取视频画面的时候就copy一个没有灰度化处理的视频画面
+先在第一次獲取視頻畫面的時候就copy一個沒有灰度化處理的視頻畫面
 
 ``` python
-# 呈现用emoji替代后的画面
+# 呈現用emoji替代後的畫面
     emoji_show = frame.copy()
 ```
 
-直接把emoji图片遮盖人脸会出现emoji背景变为黑色盖上去了。所以这里要蒙版处理一下，也就是保持emoji透明背景的特性，当然，这里所有图像都要归一化处理
+直接把emoji圖片遮蓋人臉會出現emoji背景變為黑色蓋上去了。所以這裡要蒙版處理一下，也就是保持emoji透明背景的特性，當然，這裡所有圖像都要歸一化處理
 
 ``` python
 def face2emoji(face, emotion_index, position):
@@ -377,3 +377,5 @@ def face2emoji(face, emotion_index, position):
 
     return face
 ```
+
+
