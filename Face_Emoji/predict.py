@@ -7,16 +7,16 @@ img_size = 48
 emotion_labels = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
 num_class = len(emotion_labels)
 
-# 从json中加载模型
+# 從json中加載模型
 json_file = open(model_path + 'model_json.json')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
 
-# 加载模型权重
+# 加載模型權重
 model.load_weights(model_path + 'model_weight.h5')
 
-# 加载emotion
+# 加載emotion
 emotion_images = {}
 for emoji in emotion_labels:
     emotion_images[emoji] = cv2.imread("./emoji/" + emoji + ".png", -1)
@@ -36,22 +36,22 @@ def face2emoji(face, emotion_index, position):
     return face
 
 
-# 创建VideoCapture对象
+# 創建VideoCapture對象
 capture = cv2.VideoCapture(0)
 
-# 使用opencv的人脸分类器
+# 使用opencv的人臉分類器
 cascade = cv2.CascadeClassifier(model_path + 'haarcascade_frontalface_alt.xml')
 
 while True:
     ret, frame = capture.read()
 
-    # 灰度化处理
+    # 灰度化處理
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # 呈现用emoji替代后的画面
+    # 呈現用emoji替代後的畫面
     emoji_show = frame.copy()
 
-    # 识别人脸位置
+    # 識別人臉位置
     faceLands = cascade.detectMultiScale(gray, scaleFactor=1.1,
                                          minNeighbors=1, minSize=(120, 120))
 
@@ -61,12 +61,12 @@ while True:
             images = []
             result = np.array([0.0] * num_class)
 
-            # 裁剪出脸部图像
+            # 裁剪出臉部圖像
             image = cv2.resize(gray[y:y + h, x:x + w], (img_size, img_size))
             image = image / 255.0
             image = image.reshape(1, img_size, img_size, 1)
 
-            # 调用模型预测情绪
+            # 調用模型預測情緒
             predict_lists = model.predict_proba(image, batch_size=32, verbose=1)
             # print(predict_lists)
             result += np.array([predict for predict_list in predict_lists
@@ -78,7 +78,7 @@ while True:
             emoji = face2emoji(emoji_show, emotion, (x, y, w, h))
             cv2.imshow("Emotion", emoji)
 
-            # 框出脸部并且写上标签
+            # 框出臉部並且寫上標籤
             cv2.rectangle(frame, (x - 20, y - 20), (x + w + 20, y + h + 20),
                           (0, 255, 255), thickness=10)
             cv2.putText(frame, '%s' % emotion, (x, y - 50),
@@ -88,6 +88,6 @@ while True:
         if cv2.waitKey(60) == ord('q'):
             break
 
-# 释放摄像头并销毁所有窗口
+# 釋放攝像頭並銷毀所有窗口
 capture.release()
 cv2.destroyAllWindows()

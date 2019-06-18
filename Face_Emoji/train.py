@@ -51,13 +51,13 @@ class Model:
             rescale=1. / 255,
             shear_range=0.2,
             zoom_range=0.2,
-            horizontal_flip=True)
-        # 歸依化驗證集
+            horizo​​ntal_flip=True)
+        # 歸一化驗證集
         val_datagen = ImageDataGenerator(
             rescale=1. / 255)
         eval_datagen = ImageDataGenerator(
             rescale=1. / 255)
-        # 以分類名劃分label
+        # 以文件分類名劃分label
         train_generator = train_datagen.flow_from_directory(
             data_path + '/train',
             target_size=(img_size, img_size),
@@ -79,15 +79,15 @@ class Model:
         # early_stopping = EarlyStopping(monitor='loss', patience=3)
         history_fit = self.model.fit_generator(
             train_generator,
-            steps_per_epoch=800 / (batch_siz / 32),  # 28709
+            steps_per_epoch=800 / (batch_siz / 32), # 28709
             nb_epoch=nb_epoch,
             validation_data=val_generator,
             validation_steps=2000,
             # callbacks=[early_stopping]
         )
-        #         history_eval=self.model.evaluate_generator(
-        #                 eval_generator,
-        #                 steps=2000)
+        # history_eval=self.model.evaluate_generator(
+        # eval_generator,
+        # steps=2000)
         history_predict = self.model.predict_generator(
             eval_generator,
             steps=2000)
