@@ -430,4 +430,6 @@ def face2emoji(face, emotion_index, position):
 
 ![total](image/total.png "Total")
 
-![result](image/emoji_1.jpg "Result")
+![result1](image/emoji_1.jpg "Result")
+
+![result2](image/Cam.jpg "Cam")
