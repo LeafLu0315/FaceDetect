@@ -23,5 +23,5 @@
   >python FaceDetect_Video.py <來源影片> <輸出影片>
 
 ### 使用成果
-![](demo/Negative_1.jpg?raw=true)
-![](demo/NoNegative_1.jpg?raw=true)
+![](demo/Negative_1.jpg)
+![](demo/NoNegative_1.jpg)
