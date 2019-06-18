@@ -18,6 +18,10 @@
   安裝Python後
   >python FaceDetect_Pic_Negative.py <圖片>
 
+  * 若值>0 則為靛色框
+
+  * 若值<0 則為綠色框
+
   >python FaceDetect_Pic_noNegative.py <圖片>
 
   >python FaceDetect_Video.py <來源影片> <輸出影片>
